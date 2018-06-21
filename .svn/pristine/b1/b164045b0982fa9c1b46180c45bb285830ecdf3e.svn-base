@@ -1,0 +1,31 @@
+package com.taotao.service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.pojo.ParamListResult;
+import com.taotao.mapper.TbItemParamMapper;
+import com.taotao.pojo.TbItemParam;
+import com.taotao.pojo.TbItemParamExample;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class paramListServiceImp implements paramListService
+{
+    @Autowired
+    TbItemParamMapper itemParam;
+    @Override
+    public ParamListResult getParamList(int page, int rows)
+    {
+        PageHelper.startPage(page,rows);
+        TbItemParamExample tbItemParamExample = new TbItemParamExample();
+        List<TbItemParam> list = itemParam.selectByExampleWithBLOBs(tbItemParamExample);
+        PageInfo pageInfo = new PageInfo(list);
+        ParamListResult result = new ParamListResult();
+        result.setRows(list);
+        result.setTotal(pageInfo.getTotal());
+        return result;
+    }
+}

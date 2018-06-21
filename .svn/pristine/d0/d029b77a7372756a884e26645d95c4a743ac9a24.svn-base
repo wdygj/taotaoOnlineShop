@@ -1,0 +1,7 @@
+package com.taotao.service;
+
+import com.taotao.common.pojo.ParamListResult;
+public interface paramListService
+{
+    ParamListResult getParamList(int page, int rows);
+}

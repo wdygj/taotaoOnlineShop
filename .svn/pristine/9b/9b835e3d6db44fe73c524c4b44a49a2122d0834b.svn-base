@@ -1,0 +1,54 @@
+package com.taotao.controller;
+
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+
+public class JDBCTest {
+    public static void main(String[] args){
+
+   try { 
+            // 加载驱动程序
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("加载驱动成功！");
+
+            // 连续数据库
+            
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/taotao", "root", "123");
+            
+            // statement用来执行SQL语句
+            Statement statement = (Statement) conn.createStatement();
+
+            // 要执行的SQL语句
+            String sql = "select title from tb_item";
+
+            // 结果集
+            ResultSet rs = statement.executeQuery(sql);
+
+            while(rs.next()) {
+                     // 输出结果
+                     System.out.println(rs.toString());
+            }
+
+            rs.close();
+            conn.close();
+
+   } catch(ClassNotFoundException e) {
+
+            System.out.println("Sorry,can`t find the Driver!"); 
+            e.printStackTrace();
+
+   } catch(SQLException e) {
+
+           e.printStackTrace();
+
+   } catch(Exception e) {
+
+           e.printStackTrace();
+
+   } 
+    } 
+}

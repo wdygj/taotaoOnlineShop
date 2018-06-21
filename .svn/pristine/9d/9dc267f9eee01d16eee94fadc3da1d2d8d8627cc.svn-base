@@ -1,0 +1,85 @@
+package com.taotao.service;
+
+import java.util.Date;
+import java.util.List;
+
+import com.taotao.mapper.TbItemDescMapper;
+import com.taotao.mapper.TbItemParamItemMapper;
+import com.taotao.mapper.TbItemParamMapper;
+import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemParamItem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.pojo.EasyUIDataGridResult;
+import com.taotao.mapper.TbItemMapper;
+import com.taotao.pojo.TbItem;
+import com.taotao.pojo.TbItemExample;
+import utils.IDUtils;
+import com.taotao.common.pojo.TaotaoResult;
+
+@Service
+public class ItemServiceImp implements ItemService
+{
+	@Autowired
+	private TbItemMapper itemMapper;
+	@Autowired
+	private TbItemDescMapper tbItemDescMapper;
+	@Autowired
+	private TbItemParamItemMapper tbItemParamItemMapper;
+	@Override
+	public TbItem getItemById(Long itemId) {
+		TbItem item = itemMapper.selectByPrimaryKey(itemId);
+		return item;
+	}
+
+	@Override
+	public EasyUIDataGridResult getItemList(int page, int rows) {
+		PageHelper.startPage(page, rows);
+		// TODO Auto-generated method stub
+		TbItemExample example = new TbItemExample();
+		List<TbItem> list =  itemMapper.selectByExample(example);
+		PageInfo pageInfo = new PageInfo(list);
+		EasyUIDataGridResult result = new EasyUIDataGridResult();
+		result.setTotal(pageInfo.getTotal());
+		result.setRows(list);
+		return result;
+	}
+
+	@Override
+	public TaotaoResult createItem(TbItem item, String desc, String paramData)
+	{
+		//Create cargo ID
+		long itemId= IDUtils.getItemId();;
+		Date date = new Date();
+		item.setId(itemId);
+		item.setUpdated(date);
+		item.setCreated(date);
+		//1-normal 2-undercarriage 3-delete
+		item.setStatus((byte)1);
+		itemMapper.insert(item);
+		//desc
+		TbItemDesc desc1 = new TbItemDesc();
+		desc1.setItemId(itemId);
+		desc1.setItemDesc(desc);
+		desc1.setCreated(date);
+		desc1.setUpdated(date);
+		tbItemDescMapper.insert(desc1);
+		TbItemParamItem paramItem = new TbItemParamItem();
+		paramItem.setItemId(itemId);
+		paramItem.setParamData(paramData);
+		paramItem.setCreated(date);
+		paramItem.setUpdated(date);
+		tbItemParamItemMapper.insert(paramItem);
+		return TaotaoResult.ok();
+	}
+
+	@Override
+	public TaotaoResult getDescById(Long id)
+	{
+		TbItemDesc tbItemDesc = tbItemDescMapper.selectByPrimaryKey(id);
+		return TaotaoResult.ok(tbItemDesc);
+	}
+}

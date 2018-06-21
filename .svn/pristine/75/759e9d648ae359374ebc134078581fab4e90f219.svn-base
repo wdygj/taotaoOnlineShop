@@ -1,0 +1,12 @@
+package test;
+
+import utils.FastDFSClient;
+
+public class FastDFSTest
+{
+    public static void main(String[] args) throws Exception {
+        FastDFSClient client = new FastDFSClient("properties/fdfs_client.conf");
+        String result = client.uploadFile("D:\\360Downloads\\u=2260598302,2004035923&fm=27&gp=0.jpg","jpg");
+        System.out.println(result);
+    }
+}
